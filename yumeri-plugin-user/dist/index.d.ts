@@ -1,4 +1,4 @@
-import { Context, Config, ConfigSchema, Database } from 'yumeri';
+import { Context, Schema, Database } from 'yumeri';
 export declare const depend: string[];
 export declare const provide: string[];
 export declare const usage = "\u63D0\u4F9B Yumeri \u7528\u6237\u6A21\u578B";
@@ -19,14 +19,18 @@ declare module 'yumeri' {
         user: User;
     }
 }
-export declare const config: {
-    schema: Record<string, ConfigSchema>;
-};
+export interface UserConfig {
+    name: string;
+    isEmailopen: boolean;
+    isPhoneopen: boolean;
+    encryptType: string;
+}
+export declare const config: Schema<UserConfig>;
 export declare class User {
     private db;
     private config;
     private tableName;
-    constructor(db: Database, config: Config);
+    constructor(db: Database, config: UserConfig);
     private hashPassword;
     getuserinfo(username: string): Promise<Pick<UserTable, "username" | "id" | "email" | "phone" | "createAt" | "updateAt"> | undefined>;
     getuserinfobyid(id: number): Promise<Pick<UserTable, "username" | "id" | "email" | "phone" | "createAt" | "updateAt"> | undefined>;
@@ -35,5 +39,5 @@ export declare class User {
     register(username: string, password: string, email?: string, phone?: string): Promise<false | UserTable>;
     login(username: string, password: string): Promise<boolean>;
 }
-export declare function apply(ctx: Context, config: Config): Promise<void>;
+export declare function apply(ctx: Context, config: UserConfig): Promise<void>;
 export {};

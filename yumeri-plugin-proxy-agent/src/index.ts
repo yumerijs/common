@@ -1,4 +1,4 @@
-import { Context, Config, Logger, ConfigSchema } from 'yumeri';
+import { Context, Logger, Schema } from 'yumeri';
 import { ProxyAgent } from 'proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
@@ -7,22 +7,19 @@ const logger = new Logger("proxy-agent");
 
 export const usage = `为 Yumeri 启动的 Node.js 进程设置全局 HTTP/SOCKS5 代理。`;
 
-export const config = {
-  schema: {
-    proxyUrl: {
-      type: 'string',
-      description: '代理 URL (例如 http://localhost:8080 或 socks5://localhost:1080)',
-      required: true,
-      default: "http://localhost:8080"
-    }
-  } as Record<string, ConfigSchema>
-};
+export interface ProxyAgentConfig {
+  proxyUrl: string;
+}
+
+export const config: Schema<ProxyAgentConfig> = Schema.object({
+  proxyUrl: Schema.string('代理 URL (例如 http://localhost:8080 或 socks5://localhost:1080)').default("http://localhost:8080").required(),
+});
 
 let originalHttpAgent: any;
 let originalHttpsAgent: any;
 
-export async function apply(ctx: Context, config: Config) {
-  const proxyUrl = config.get<string>('proxyUrl');
+export async function apply(ctx: Context, config: ProxyAgentConfig) {
+  const { proxyUrl } = config;
 
   if (!proxyUrl) {
     logger.error('Proxy URL is not configured.');

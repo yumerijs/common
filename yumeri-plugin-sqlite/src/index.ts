@@ -1,6 +1,5 @@
-
-import { Context, Config, Logger, ConfigSchema } from 'yumeri';
-import { Database as YumeriDatabase, Tables, Schema, IndexDefinition, FieldDefinition, FieldType, Query, Operator } from '@yumerijs/types';
+import { Context, Logger, Schema } from 'yumeri';
+import { Database as YumeriDatabase, Tables, Schema as YumeriSchema, IndexDefinition, FieldDefinition, FieldType, Query, Operator } from '@yumerijs/types';
 import { open, Database as SQLiteDriver } from 'sqlite';
 import { Database as SQLite3 } from 'sqlite3';
 import * as path from 'path';
@@ -103,7 +102,7 @@ class SqliteDatabase implements YumeriDatabase {
 
     async extend<K extends keyof Tables>(
         table: K,
-        schema: Schema<Partial<Tables[K]>>,
+        schema: YumeriSchema<Partial<Tables[K]>>,
         indexes?: IndexDefinition<Tables[K]>
     ): Promise<void> {
         const tableName = table as string;
@@ -217,18 +216,16 @@ class SqliteDatabase implements YumeriDatabase {
 
 // --- Plugin Definition ---
 
-export const config = {
-    schema: {
-        path: {
-            type: 'string',
-            default: 'data/database.db',
-            description: '数据库文件地址'
-        }
-    } as Record<string, ConfigSchema>
-};
+export interface SqliteConfig {
+    path: string;
+}
 
-export async function apply(ctx: Context, config: Config) {
-    const dbPath = path.join(process.cwd(), config.get<string>('path', 'data/database.db'));
+export const config: Schema<SqliteConfig> = Schema.object({
+    path: Schema.string('数据库文件地址').default('data/database.db'),
+});
+
+export async function apply(ctx: Context, config: SqliteConfig) {
+    const dbPath = path.join(process.cwd(), config.path);
     const db = await SqliteDatabase.create(dbPath);
     ctx.registerComponent('database', db);
 }

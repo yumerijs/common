@@ -1,4 +1,4 @@
-import { Context, Config, Logger, ConfigSchema, Database } from 'yumeri'
+import { Context, Logger, Schema, Database } from 'yumeri'
 import * as crypto from 'crypto'
 
 const logger = new Logger('user')
@@ -26,42 +26,29 @@ declare module 'yumeri' {
   }
 }
 
-export const config = {
-  schema: {
-    name: {
-      type: 'string',
-      default: 'user',
-      description: '用户数据表名'
-    },
-    isEmailopen: {
-      type: 'boolean',
-      default: true,
-      description: '是否开启邮箱字段'
-    },
-    isPhoneopen: {
-      type: 'boolean',
-      default: true,
-      description: '是否开启手机号字段'
-    },
-    encryptType: {
-      type: 'string',
-      default: 'md5',
-      enum: ['md5', 'sha1', 'sha256', 'sha512'],
-      description: '密码加密方式'
-    }
-  } as Record<string, ConfigSchema>
+export interface UserConfig {
+  name: string;
+  isEmailopen: boolean;
+  isPhoneopen: boolean;
+  encryptType: string;
 }
+
+export const config: Schema<UserConfig> = Schema.object({
+  name: Schema.string('用户数据表名').default('user'),
+  isEmailopen: Schema.boolean('是否开启邮箱字段').default(true),
+  isPhoneopen: Schema.boolean('是否开启手机号字段').default(true),
+  encryptType: Schema.string('密码加密方式').default('md5'),
+});
 
 export class User {
   private tableName: string
 
-  constructor(private db: Database, private config: Config) {
-    this.tableName = this.config.get('name', 'user')
+  constructor(private db: Database, private config: UserConfig) {
+    this.tableName = this.config.name
   }
 
   private hashPassword(password: string): string {
-    const encryptType = this.config.get<string>('encryptType', 'md5')
-    return crypto.createHash(encryptType).update(password).digest('hex')
+    return crypto.createHash(this.config.encryptType).update(password).digest('hex')
   }
 
   async getuserinfo(username: string) {
@@ -86,8 +73,8 @@ export class User {
     const data: Partial<UserTable> = {
       username,
       password: hashedPassword,
-      email: this.config.get('isEmailopen') ? email ?? null : null,
-      phone: this.config.get('isPhoneopen') ? phone ?? null : null,
+      email: this.config.isEmailopen ? email ?? null : null,
+      phone: this.config.isPhoneopen ? phone ?? null : null,
       createAt: new Date(),
       updateAt: new Date()
     }
@@ -106,7 +93,7 @@ export class User {
   }
 }
 
-export async function apply(ctx: Context, config: Config) {
+export async function apply(ctx: Context, config: UserConfig) {
   const db = ctx.component.database;
 
   const schema: Record<string, any> = {
@@ -117,8 +104,8 @@ export async function apply(ctx: Context, config: Config) {
     updateAt: 'date'
   }
 
-  if (config.get('isEmailopen')) schema.email = 'string'
-  if (config.get('isPhoneopen')) schema.phone = 'string'
+  if (config.isEmailopen) schema.email = 'string'
+  if (config.isPhoneopen) schema.phone = 'string'
 
   db.extend('user', schema, {
     primary: 'id',

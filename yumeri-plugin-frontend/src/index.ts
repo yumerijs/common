@@ -1,4 +1,4 @@
-import { Context, Config, Session, Logger, ConfigSchema } from 'yumeri'
+import { Context, Session, Logger, Schema } from 'yumeri'
 import path from 'path'
 import fse from 'fs-extra'
 import 'yumeri-plugin-pages' // 仅类型引用
@@ -13,16 +13,13 @@ function getTemplates(): string[] {
   return fse.readdirSync(dir)
 }
 
-export const config = {
-  schema: {
-    template: {
-      type: 'string',
-      default: 'default',
-      description: '前端模板风格',
-      enum: getTemplates(),
-    },
-  } as Record<string, ConfigSchema>,
+export interface FrontendConfig {
+  template: string;
 }
+
+export const config: Schema<FrontendConfig> = Schema.object({
+  template: Schema.string('前端模板风格').default('default'),
+});
 
 function getTemplateConfig(template: string) {
   const cfgPath = path.join(process.cwd(), 'data/templates', template, 'config.json')
@@ -43,7 +40,7 @@ interface ParsedRoute {
   id?: number
 }
 
-function parseRoute(pathname: string, config: Config): ParsedRoute {
+function parseRoute(pathname: string, config: FrontendConfig): ParsedRoute {
   if (!pathname || pathname === '/') return { type: 'home' }
   const clean = pathname.replace(/^\/|\/$/g, '')
   const segments = clean.split('/').filter(Boolean)
@@ -81,11 +78,11 @@ function applyReplacements(content: string, replacements: Record<string, string>
   return result
 }
 
-export async function apply(ctx: Context, config: Config) {
+export async function apply(ctx: Context, config: FrontendConfig) {
   ctx.route('root').action(async (session: Session, params: URLSearchParams) => {
     try {
       const pathname = (session.pathname || '/').replace(/\/+$/, '') || '/'
-      const templateName = config.get<string>('template')
+      const templateName = config.template
       const templatePath = path.join(process.cwd(), 'data/templates', templateName)
       const parsed = parseRoute(pathname, config)
       const templateCfg = getTemplateConfig(templateName)

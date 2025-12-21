@@ -313,33 +313,22 @@ class MysqlDatabase {
     }
 }
 // --- Plugin Definition ---
-exports.config = {
-    schema: {
-        host: { type: 'string', default: 'localhost', description: 'MySQL 主机名' },
-        port: { type: 'number', default: 3306, description: 'MySQL 端口' },
-        user: { type: 'string', required: true, description: '用户名' },
-        password: { type: 'string', required: true, description: '密码' },
-        database: { type: 'string', required: true, description: '数据库名' },
-        connectionLimit: { type: 'number', default: 10, description: '连接池大小' },
-        charset: { type: 'string', default: 'utf8mb4', description: '字符集', enum: ['utf8', 'utf8mb4'] },
-    }
-};
+exports.config = yumeri_1.Schema.object({
+    host: yumeri_1.Schema.string('MySQL 主机名').default('localhost'),
+    port: yumeri_1.Schema.number('MySQL 端口').default(3306),
+    user: yumeri_1.Schema.string('用户名').required(),
+    password: yumeri_1.Schema.string('密码').required(),
+    database: yumeri_1.Schema.string('数据库名').required(),
+    connectionLimit: yumeri_1.Schema.number('连接池大小').default(10),
+    charset: yumeri_1.Schema.string('字符集').default('utf8mb4'),
+});
 async function apply(ctx, config) {
-    const options = {
-        host: config.get('host'),
-        port: config.get('port'),
-        user: config.get('user'),
-        password: config.get('password'),
-        database: config.get('database'),
-        connectionLimit: config.get('connectionLimit'),
-        charset: config.get('charset'),
-    };
-    if (!options.user || !options.password || !options.database) {
+    if (!config.user || !config.password || !config.database) {
         logger.error('MySQL plugin is not configured correctly. Please provide user, password, and database.');
         return;
     }
     try {
-        const db = await MysqlDatabase.create(options);
+        const db = await MysqlDatabase.create(config);
         ctx.registerComponent('database', db);
     }
     catch (error) {
@@ -348,5 +337,7 @@ async function apply(ctx, config) {
 }
 async function disable(ctx) {
     const db = ctx.getComponent('database');
-    await db.close();
+    if (db) {
+        await db.close();
+    }
 }

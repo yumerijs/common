@@ -1,4 +1,4 @@
-import { Context, Config, Session, Logger, ConfigSchema } from 'yumeri';
+import { Context, Session, Logger, Schema } from 'yumeri';
 import 'yumeri-plugin-user';
 import 'yumeri-plugin-authority';
 import 'yumeri-plugin-pages';
@@ -10,22 +10,17 @@ const logger = new Logger("author-center");
 
 export const depend = ['user', 'authority', 'pages', 'permission'];
 
-export const config = {
-  schema: {
-    content: {
-      type: 'array',
-      default: ['post'],
-      description: '可发布的文章类型'
-    },
-    permit: {
-      type: 'number',
-      default: 2,
-      description: '发布文章的权限'
-    }
-  } as Record<string, ConfigSchema>
-};
+export interface AuthorCenterConfig {
+  content: string[];
+  permit: number;
+}
 
-export async function apply(ctx: Context, config: Config) {
+export const config: Schema<AuthorCenterConfig> = Schema.object({
+  content: Schema.array(Schema.string(), '可发布的文章类型').default(['post']),
+  permit: Schema.number('发布文章的权限').default(2),
+});
+
+export async function apply(ctx: Context, config: AuthorCenterConfig) {
   const user = ctx.component.user;
   const authority = ctx.component.authority;
   const pages = ctx.component.pages;
@@ -38,7 +33,7 @@ export async function apply(ctx: Context, config: Config) {
     return async (session: Session, params: URLSearchParams) => {
       if (authority.getLoginstatus(session.sessionid)) {
         const userid = ((await authority.getUserinfo(session.sessionid)) as any).id;
-        if (await permit.getPermit(userid) >= config.get<number>('permit')) {
+        if (await permit.getPermit(userid) >= config.permit) {
           await handler(session, params);
         } else {
           session.setMime('json');

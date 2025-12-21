@@ -47,26 +47,12 @@ const logger = new yumeri_1.Logger("authority");
 exports.depend = ['user']; // 需要的服务
 exports.provide = ['authority']; // 提供的服务
 exports.usage = `用户登陆验证服务<br>依赖于yumeri-plugin-user（用户模型）`;
-exports.config = {
-    schema: {
-        template: {
-            type: 'object',
-            properties: {
-                loginpath: {
-                    type: 'string',
-                    default: '../static/login.html',
-                    description: '登录页模板地址'
-                },
-                regpath: {
-                    type: 'string',
-                    default: '../static/reg.html',
-                    description: '注册页模板地址'
-                }
-            },
-            description: 'HTML模板配置'
-        }
-    }
-};
+exports.config = yumeri_1.Schema.object({
+    template: yumeri_1.Schema.object({
+        loginpath: yumeri_1.Schema.string('登录页模板地址').default('../static/login.html'),
+        regpath: yumeri_1.Schema.string('注册页模板地址').default('../static/reg.html'),
+    }, 'HTML模板配置'),
+});
 function resolvePath(inputPath, currentFileDirectory) {
     if (path.isAbsolute(inputPath)) {
         return inputPath;
@@ -109,7 +95,7 @@ async function apply(ctx, config) {
     const user = ctx.component.user;
     // HTML Pages
     ctx.route('/auth/login').action(async (session) => {
-        const loginPath = resolvePath(config.get('template.loginpath', '../static/login.html'), __dirname);
+        const loginPath = resolvePath(config.template.loginpath, __dirname);
         if (!fs_1.default.existsSync(loginPath))
             return;
         let html = fs_1.default.readFileSync(loginPath, 'utf-8');
@@ -128,7 +114,7 @@ async function apply(ctx, config) {
         session.setMime('html');
     });
     ctx.route('/auth/register').action(async (session) => {
-        const regPath = resolvePath(config.get('template.regpath', '../static/reg.html'), __dirname);
+        const regPath = resolvePath(config.template.regpath, __dirname);
         if (!fs_1.default.existsSync(regPath))
             return;
         let html = fs_1.default.readFileSync(regPath, 'utf-8');

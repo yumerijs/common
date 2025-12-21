@@ -1,10 +1,10 @@
-import { Context, Config, Logger, ConfigSchema } from 'yumeri';
+import { Context, Logger } from 'yumeri';
 import { PagesComponent } from 'yumeri-plugin-pages';
 
 const logger = new Logger("tinytools");
 export const depend = ['pages'];
 
-export const config = {} as Record<string, ConfigSchema>
+export const config = {};
 
 const tools = {
   postlist: async function(pages: PagesComponent, info: any) {
@@ -47,7 +47,7 @@ const tools = {
   }
 }
 
-export async function apply(ctx: Context, config: Config) {
+export async function apply(ctx: Context, config: {}) {
   const pages = ctx.component.pages;
 
   ctx.hook('frontend:render', 'tinytools', async (info) => {

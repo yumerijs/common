@@ -1,4 +1,4 @@
-import { Context, Config, Logger, ConfigSchema, Database } from 'yumeri';
+import { Context, Logger, Schema, Database } from 'yumeri';
 import 'yumeri-plugin-user';
 import './types'; // Import for declaration merging
 
@@ -8,16 +8,13 @@ export const depend = ['database', 'user'];
 export const usage = `用户权限模型<br>依赖于yumeri-plugin-user（用户模型）<br>超管权限大小为10`;
 export const provide = ['permission'];
 
-export const config = {
-  schema: {
-    defaultpermit: {
-      type: 'number',
-      default: 1,
-      description: '默认权限',
-      required: true
-    }
-  } as Record<string, ConfigSchema>
-};
+export interface PermissionConfig {
+  defaultpermit: number;
+}
+
+export const config: Schema<PermissionConfig> = Schema.object({
+  defaultpermit: Schema.number('默认权限').default(1).required(),
+});
 
 export interface Permit {
   getPermit(id: number): Promise<number>;
@@ -29,13 +26,13 @@ declare module 'yumeri' {
   }
 }
 
-export async function apply(ctx: Context, config: Config) {
+export async function apply(ctx: Context, config: PermissionConfig) {
   const db = ctx.component.database;
 
   // Use extend() to define the table schema. This is idempotent.
   await db.extend('permission', {
     id: { type: 'unsigned', nullable: false },
-    permit: { type: 'unsigned', initial: config.get('defaultpermit', 1) }
+    permit: { type: 'unsigned', initial: config.defaultpermit }
   }, { primary: 'id' });
 
   ctx.registerComponent('permission', {
@@ -48,9 +45,9 @@ export async function apply(ctx: Context, config: Config) {
         // Creating it here ensures consistency.
         await db.create('permission', { 
           id, 
-          permit: config.get('defaultpermit', 1) 
+          permit: config.defaultpermit
         });
-        return config.get('defaultpermit', 1);
+        return config.defaultpermit;
       }
     }
   } as Permit);

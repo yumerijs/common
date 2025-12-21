@@ -1,4 +1,4 @@
-import { Context, Config, Session, Logger, ConfigSchema } from 'yumeri';
+import { Context, Session, Logger, Schema } from 'yumeri';
 import * as path from 'path';
 import fs from 'fs';
 import 'yumeri-plugin-user'
@@ -15,26 +15,21 @@ declare module 'yumeri' {
   }
 }
 
-export const config = {
-  schema: {
-    template: {
-      type: 'object',
-      properties: {
-        loginpath: {
-          type: 'string',
-          default: '../static/login.html',
-          description: '登录页模板地址'
-        },
-        regpath: {
-          type: 'string',
-          default: '../static/reg.html',
-          description: '注册页模板地址'
-        }
-      },
-      description: 'HTML模板配置'
-    }
-  } as Record<string, ConfigSchema>
-};
+interface TemplateConfig {
+  loginpath: string;
+  regpath: string;
+}
+
+export interface AuthorityConfig {
+  template: TemplateConfig;
+}
+
+export const config: Schema<AuthorityConfig> = Schema.object({
+  template: Schema.object({
+    loginpath: Schema.string('登录页模板地址').default('../static/login.html'),
+    regpath: Schema.string('注册页模板地址').default('../static/reg.html'),
+  }, 'HTML模板配置'),
+});
 
 export function resolvePath(inputPath: string, currentFileDirectory: string): string {
   if (path.isAbsolute(inputPath)) {
@@ -61,7 +56,7 @@ export interface Authority {
   getUserinfo(sessionid: string): Promise<Record<string, any>> | false
 }
 
-export async function apply(ctx: Context, config: Config) {
+export async function apply(ctx: Context, config: AuthorityConfig) {
   let logins: Record<string, number> = {};
   ctx.registerComponent('authority', {
     getLoginstatus(sessionid: string) {
@@ -83,7 +78,7 @@ export async function apply(ctx: Context, config: Config) {
 
   // HTML Pages
   ctx.route('/auth/login').action(async (session) => {
-    const loginPath = resolvePath(config.get<string>('template.loginpath', '../static/login.html'), __dirname);
+    const loginPath = resolvePath(config.template.loginpath, __dirname);
     if (!fs.existsSync(loginPath)) return;
 
     let html = fs.readFileSync(loginPath, 'utf-8');
@@ -106,7 +101,7 @@ export async function apply(ctx: Context, config: Config) {
   });
 
   ctx.route('/auth/register').action(async (session) => {
-    const regPath = resolvePath(config.get<string>('template.regpath', '../static/reg.html'), __dirname);
+    const regPath = resolvePath(config.template.regpath, __dirname);
     if (!fs.existsSync(regPath)) return;
 
     let html = fs.readFileSync(regPath, 'utf-8');

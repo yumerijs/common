@@ -1,4 +1,4 @@
-import { Context, Config, Session, Logger, ConfigSchema } from 'yumeri';
+import { Context, Session, Logger, Schema } from 'yumeri';
 
 const logger = new Logger('metadata');
 
@@ -18,7 +18,7 @@ export const usage = `
 `;
 
 export interface MetadataConfig {
-  headers: Array<{ name: string; value: string; }>; // Changed to string for schema compatibility
+  headers: Array<{ name: string; value: string; }>;
   head: string;
   script: string;
   presets: {
@@ -31,62 +31,25 @@ export interface MetadataConfig {
   }
 }
 
-export const config = {
-  schema: {
-    headers: {
-      type: 'array',
-      default: [],
-      description: '响应头键值对',
-      items: {
-        type: 'object',
-        properties: {
-          name: { type: 'string', required: true },
-          value: { type: 'string', required: true } // Changed to string
-        }
-      }
-    },
-    head: {
-      type: 'string',
-      default: '',
-      description: 'head标签注入内容',
-    },
-    script: {
-      type: 'string',
-      default: '',
-      description: 'body标签注入内容',
-    },
-    presets: {
-      type: 'object',
-      default: {},
-      description: '预设功能',
-      properties: {
-        cors: {
-          type: 'object',
-          description: '配置跨域',
-          default: {},
-          properties: {
-            enabled: { type: 'boolean', default: false, description: '是否启用'},
-            origin: { type: 'string', default: '*', description: '允许的域名'},
-            methods: { type: 'string', default: 'GET,HEAD,PUT,PATCH,POST,DELETE', description: '允许的方法'},
-          }
-        },
-        security: {
-          type: 'boolean',
-          default: false,
-          description: '开启安全头，可以防止一些常见的web攻击',
-        },
-      },
-    },
-  } as Record<string, ConfigSchema>,
-};
+export const config: Schema<MetadataConfig> = Schema.object({
+  headers: Schema.array(Schema.object({
+    name: Schema.string().required(),
+    value: Schema.string().required(),
+  }), '响应头键值对').default([]),
+  head: Schema.string('head标签注入内容').default(''),
+  script: Schema.string('body标签注入内容').default(''),
+  presets: Schema.object({
+    cors: Schema.object({
+      enabled: Schema.boolean('是否启用').default(false),
+      origin: Schema.string('允许的域名').default('*'),
+      methods: Schema.string('允许的方法').default('GET,HEAD,PUT,PATCH,POST,DELETE'),
+    }, '配置跨域').default({ enabled: false, origin: '*', methods: 'GET,HEAD,PUT,PATCH,POST,DELETE' }),
+    security: Schema.boolean('开启安全头，可以防止一些常见的web攻击').default(false),
+  }, '预设功能').default({ cors: { enabled: false, origin: '*', methods: 'GET,HEAD,PUT,PATCH,POST,DELETE' }, security: false }),
+});
 
-export async function apply(ctx: Context, config: Config) {
-  const head = config.get<string>('head', '');
-  const script = config.get<string>('script', '');
-  const presets = config.get<MetadataConfig['presets']>('presets');
-  // Changed type to string[] for compatibility with schema.
-  // The Node.js setHeader method handles string[] by joining with ', '.
-  const userHeaders = config.get<Array<{ name: string; value: string; }>>('headers', []);
+export async function apply(ctx: Context, config: MetadataConfig) {
+  const { head, script, presets, headers: userHeaders } = config;
 
   // Pre-middleware for headers
   ctx.use('metadata-headers', async (session: Session, next: () => Promise<void>) => {
@@ -125,7 +88,6 @@ export async function apply(ctx: Context, config: Config) {
         session.endsession('');
         return;
     }
-
 
     // Apply user-defined headers (will override or append to presets if names match, depending on header type)
     finalHeaders = finalHeaders.concat(userHeaders);

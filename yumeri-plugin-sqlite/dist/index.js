@@ -248,18 +248,11 @@ class SqliteDatabase {
         }
     }
 }
-// --- Plugin Definition ---
-exports.config = {
-    schema: {
-        path: {
-            type: 'string',
-            default: 'data/database.db',
-            description: '数据库文件地址'
-        }
-    }
-};
+exports.config = yumeri_1.Schema.object({
+    path: yumeri_1.Schema.string('数据库文件地址').default('data/database.db'),
+});
 async function apply(ctx, config) {
-    const dbPath = path.join(process.cwd(), config.get('path', 'data/database.db'));
+    const dbPath = path.join(process.cwd(), config.path);
     const db = await SqliteDatabase.create(dbPath);
     ctx.registerComponent('database', db);
 }

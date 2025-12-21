@@ -1,4 +1,4 @@
-import { Context, Config, Logger, ConfigSchema, Session } from 'yumeri';
+import { Context, Logger, Schema, Session } from 'yumeri';
 import 'yumeri-plugin-console';
 import './types';
 
@@ -6,15 +6,13 @@ const logger = new Logger("analyse");
 
 export const depend = ['database', 'console'];
 
-export const config = {
-  schema: {
-    paths: {
-      type: 'array',
-      default: ['api'],
-      description: '排除url开头（不加前后斜线）'
-    }
-  } as Record<string, ConfigSchema>
-};
+export interface AnalyseConfig {
+  paths: string[];
+}
+
+export const config: Schema<AnalyseConfig> = Schema.object({
+  paths: Schema.array(Schema.string(), '排除url开头（不加前后斜线）').default(['api']),
+});
 
 // HTML and JS for the console page remain the same
 const analyseHtml = `<div class="module-section">
@@ -70,7 +68,7 @@ const analyseJs = `async function loadStats() {
 
 loadStats();`;
 
-export async function apply(ctx: Context, config: Config) {
+export async function apply(ctx: Context, config: AnalyseConfig) {
   const db = ctx.component.database;
   const consoleApi = ctx.component.console;
   const requireLogin = (
@@ -95,7 +93,7 @@ export async function apply(ctx: Context, config: Config) {
   ctx.hook('console:homejs', 'analyse', async () => analyseJs);
 
   const getStartWith = (pathname: string) => {
-    const paths = config.get<string[]>('paths', []);
+    const paths = config.paths;
     return !paths.some(path => pathname.startsWith('/' + path));
   };
 

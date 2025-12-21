@@ -1,4 +1,4 @@
-import { Context, Config, ConfigSchema } from 'yumeri';
+import { Context, Schema } from 'yumeri';
 import 'yumeri-plugin-user';
 export declare const depend: string[];
 export declare const provide: string[];
@@ -8,12 +8,18 @@ declare module 'yumeri' {
         authority: Authority;
     }
 }
-export declare const config: {
-    schema: Record<string, ConfigSchema>;
-};
+interface TemplateConfig {
+    loginpath: string;
+    regpath: string;
+}
+export interface AuthorityConfig {
+    template: TemplateConfig;
+}
+export declare const config: Schema<AuthorityConfig>;
 export declare function resolvePath(inputPath: string, currentFileDirectory: string): string;
 export interface Authority {
     getLoginstatus(sessionid: string): boolean;
     getUserinfo(sessionid: string): Promise<Record<string, any>> | false;
 }
-export declare function apply(ctx: Context, config: Config): Promise<void>;
+export declare function apply(ctx: Context, config: AuthorityConfig): Promise<void>;
+export {};

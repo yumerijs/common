@@ -1,4 +1,4 @@
-import { Context, Config, Session, Logger, ConfigSchema, Database } from 'yumeri';
+import { Context, Session, Logger, Database } from 'yumeri';
 
 const logger = new Logger("pages");
 
@@ -36,7 +36,7 @@ declare module 'yumeri' {
   }
 }
 
-export const config = {} as Record<string, ConfigSchema>
+export const config = {};
 
 export class PagesComponent {
   constructor(private db: Database) {}
@@ -93,7 +93,7 @@ export class PagesComponent {
   }
 }
 
-export async function apply(ctx: Context, config: Config) {
+export async function apply(ctx: Context, config: {}) {
   const db = ctx.component.database;
   db.extend(
     'pages',
