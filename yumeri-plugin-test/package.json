@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-test",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "测试插件",
   "main": "dist/index.js",
   "dev": "src/index.ts",
@@ -24,6 +24,6 @@
     "vue": "^3.3.0"
   },
   "peerDependencies": {
-    "yumeri": "^2.0.0"
+    "yumeri": "^2.1.2"
   }
 }

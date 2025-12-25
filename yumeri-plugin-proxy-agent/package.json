@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-proxy-agent",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A proxy agent plugin for Yumeri",
   "main": "dist/index.js",
   "dev": "src/index.ts",
@@ -18,6 +18,6 @@
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
-    "yumeri": "^2.0.0"
+    "yumeri": "^2.1.2"
   }
 }
