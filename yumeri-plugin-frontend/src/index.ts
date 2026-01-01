@@ -18,7 +18,7 @@ export interface FrontendConfig {
 }
 
 export const config: Schema<FrontendConfig> = Schema.object({
-  template: Schema.string('前端模板风格').default('default'),
+  template: Schema.enum(getTemplates(), '前端模板').default('default'),
 });
 
 function getTemplateConfig(template: string) {
