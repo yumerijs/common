@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-tinytools",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Yumeri 小组件合集",
   "main": "dist/index.js",
   "dev": "src/index.ts",
@@ -8,10 +8,6 @@
   "files": [
     "dist"
   ],
-  "scripts": {
-    "build": "tsc",
-    "prepublishOnly": "yarn build"
-  },
   "keywords": [
     "yumeri",
     "api",
@@ -27,5 +23,6 @@
   },
   "dependencies": {
     "yumeri-plugin-frontend": "^1.0.1"
-  }
+  },
+  "type": "module"
 }

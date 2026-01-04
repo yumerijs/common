@@ -5,8 +5,10 @@ import 'yumeri-plugin-pages';
 import 'yumeri-plugin-permission';
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 const logger = new Logger("author-center");
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const depend = ['user', 'authority', 'pages', 'permission'];
 

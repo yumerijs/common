@@ -1,7 +1,8 @@
-import { Context, Schema, Database } from 'yumeri';
-export declare const depend: string[];
-export declare const provide: string[];
-export declare const usage = "\u63D0\u4F9B Yumeri \u7528\u6237\u6A21\u578B";
+import { Database, Schema, Context } from 'yumeri';
+
+declare const depend: string[];
+declare const provide: string[];
+declare const usage = "\u63D0\u4F9B Yumeri \u7528\u6237\u6A21\u578B";
 interface UserTable {
     id: number;
     username: string;
@@ -19,14 +20,14 @@ declare module 'yumeri' {
         user: User;
     }
 }
-export interface UserConfig {
+interface UserConfig {
     name: string;
     isEmailopen: boolean;
     isPhoneopen: boolean;
     encryptType: string;
 }
-export declare const config: Schema<UserConfig>;
-export declare class User {
+declare const config: Schema<UserConfig>;
+declare class User {
     private db;
     private config;
     private tableName;
@@ -39,5 +40,6 @@ export declare class User {
     register(username: string, password: string, email?: string, phone?: string): Promise<false | UserTable>;
     login(username: string, password: string): Promise<boolean>;
 }
-export declare function apply(ctx: Context, config: UserConfig): Promise<void>;
-export {};
+declare function apply(ctx: Context, config: UserConfig): Promise<void>;
+
+export { User, type UserConfig, apply, config, depend, provide, usage };

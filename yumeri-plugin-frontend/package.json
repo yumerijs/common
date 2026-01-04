@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-frontend",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Yumeri 基础前端模板服务",
   "main": "dist/index.js",
   "dev": "src/index.ts",
@@ -8,10 +8,6 @@
   "files": [
     "dist"
   ],
-  "scripts": {
-    "build": "tsc",
-    "prepublishOnly": "yarn build"
-  },
   "keywords": [
     "yumeri",
     "api",
@@ -31,5 +27,6 @@
   },
   "dependencies": {
     "fs-extra": "^11.3.2"
-  }
+  },
+  "type": "module"
 }

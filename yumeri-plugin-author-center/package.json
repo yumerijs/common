@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-author-center",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Yumeri 作者中心插件",
   "main": "dist/index.js",
   "dev": "src/index.ts",
@@ -9,10 +9,6 @@
     "dist",
     "static"
   ],
-  "scripts": {
-    "build": "tsc",
-    "prepublishOnly": "yarn build"
-  },
   "keywords": [
     "yumeri",
     "api",
@@ -31,5 +27,6 @@
     "yumeri-plugin-pages": "^1.0.0",
     "yumeri-plugin-permission": "^1.0.4",
     "yumeri-plugin-user": "^1.1.0"
-  }
+  },
+  "type": "module"
 }

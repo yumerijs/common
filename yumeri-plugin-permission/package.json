@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-permission",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Permission module for Yumeri",
   "main": "dist/index.js",
   "dev": "src/index.ts",
@@ -9,10 +9,6 @@
     "dist",
     "static"
   ],
-  "scripts": {
-    "build": "tsc",
-    "prepublishOnly": "yarn build"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yumerijs/yumeri.git"
@@ -38,5 +34,6 @@
   "peerDependencies": {
     "yumeri": "^2.1.2",
     "yumeri-plugin-user": "^1.1.1"
-  }
+  },
+  "type": "module"
 }

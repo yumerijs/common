@@ -6,6 +6,16 @@ const logger = new Logger("analyse");
 
 export const depend = ['database', 'console'];
 
+declare module 'yumeri' {
+  interface Components {
+    console: {
+      addconsoleitem: (name: string, icon: string, displayname: string, htmlpath: string, staticpath: string) => void;
+      removeconsoleitem: (name: string) => void;
+      getloginstatus: (session: Session) => boolean;
+    };
+  }
+}
+
 export interface AnalyseConfig {
   paths: string[];
 }

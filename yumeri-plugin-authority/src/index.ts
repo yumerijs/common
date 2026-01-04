@@ -1,9 +1,11 @@
 import { Context, Session, Logger, Schema } from 'yumeri';
 import * as path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 import 'yumeri-plugin-user'
 
 const logger = new Logger("authority");
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const depend = ['user']; // 需要的服务
 export const provide = ['authority']; // 提供的服务
