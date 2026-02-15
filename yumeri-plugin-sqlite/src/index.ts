@@ -1,9 +1,10 @@
 import { Context, Logger, Schema } from 'yumeri';
 import { Database as YumeriDatabase, Tables, Schema as YumeriSchema, IndexDefinition, FieldDefinition, FieldType, Query, Operator } from '@yumerijs/types';
 import { open, Database as SQLiteDriver } from 'sqlite';
-import { Database as SQLite3 } from 'sqlite3';
+import * as sq3 from 'sqlite3';
 import * as path from 'path';
 
+const SQLite3 = sq3.Database;
 const logger = new Logger("sqlite");
 export const provide = ['database']
 
