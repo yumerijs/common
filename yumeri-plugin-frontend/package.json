@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-frontend",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Yumeri 基础前端模板服务",
   "main": "dist/index.js",
   "dev": "src/index.ts",
@@ -17,12 +17,12 @@
   "devDependencies": {
     "@types/fs-extra": "^11",
     "@types/node": "^22.14.1",
-    "@yumerijs/types": "^2.0.0",
+    "@yumerijs/types": "^3.0.0-alpha.1",
     "typescript": "^5.8.2",
     "yumeri-plugin-pages": "^1.0.0"
   },
   "peerDependencies": {
-    "yumeri": "^2.1.2",
+    "yumeri": "^3.0.0-alpha.1",
     "yumeri-plugin-pages": "^1.0.1"
   },
   "dependencies": {

@@ -1,7 +1,6 @@
-import { Schema, Context } from 'yumeri';
-
-declare const provide: string[];
-interface MysqlConfig {
+import { Context, Schema } from 'yumeri';
+export declare const provide: string[];
+export interface MysqlConfig {
     host?: string;
     port?: number;
     user?: string;
@@ -10,8 +9,6 @@ interface MysqlConfig {
     connectionLimit?: number;
     charset?: string;
 }
-declare const config: Schema<MysqlConfig>;
-declare function apply(ctx: Context, config: MysqlConfig): Promise<void>;
-declare function disable(ctx: Context): Promise<void>;
-
-export { type MysqlConfig, apply, config, disable, provide };
+export declare const config: Schema<MysqlConfig>;
+export declare function apply(ctx: Context, config: MysqlConfig): Promise<void>;
+export declare function disable(ctx: Context): Promise<void>;

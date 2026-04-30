@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-tinytools",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Yumeri 小组件合集",
   "main": "dist/index.js",
   "dev": "src/index.ts",
@@ -19,7 +19,7 @@
     "typescript": "^5.8.2"
   },
   "peerDependencies": {
-    "yumeri": "^2.1.2"
+    "yumeri": "^3.0.0-alpha.1"
   },
   "dependencies": {
     "yumeri-plugin-frontend": "^1.0.1"

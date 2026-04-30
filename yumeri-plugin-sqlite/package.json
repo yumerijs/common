@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-sqlite",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Sqlite database for Yumeri",
   "main": "dist/index.js",
   "dev": "src/index.ts",
@@ -25,7 +25,7 @@
   "homepage": "https://github.com/yumerijs/yumeri#readme",
   "devDependencies": {
     "@types/node": "^22.14.1",
-    "@yumerijs/types": "^2.0.0",
+    "@yumerijs/types": "^3.0.0-alpha.1",
     "typescript": "^5.8.2"
   },
   "dependencies": {
@@ -33,7 +33,7 @@
     "sqlite3": "^5.1.7"
   },
   "peerDependencies": {
-    "yumeri": "^2.1.2"
+    "yumeri": "^3.0.0-alpha.1"
   },
   "type": "module"
 }
