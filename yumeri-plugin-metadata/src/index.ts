@@ -53,6 +53,13 @@ export async function apply(ctx: Context, config: MetadataConfig) {
 
   // Pre-middleware for headers
   ctx.use('metadata-headers', async (session: Session, next: () => Promise<void>) => {
+    const req = session.client.req;
+    const res = session.client.res;
+    if (!req || !res) {
+      await next();
+      return;
+    }
+
     let finalHeaders: Array<{ name: string; value: string; }> = [];
 
     // Security preset
@@ -75,14 +82,14 @@ export async function apply(ctx: Context, config: MetadataConfig) {
     }
     
     // Handle OPTIONS pre-flight requests for CORS
-    if (presets?.cors?.enabled && session.client.req.method === 'OPTIONS') {
+    if (presets?.cors?.enabled && req.method === 'OPTIONS') {
         const corsHeaders: Record<string, string> = {
             'Access-Control-Allow-Origin': presets.cors.origin,
             'Access-Control-Allow-Methods': presets.cors.methods,
-            'Access-Control-Allow-Headers': session.client.req.headers['access-control-request-headers'] || 'Content-Type,Authorization'
+            'Access-Control-Allow-Headers': String(req.headers['access-control-request-headers'] || 'Content-Type,Authorization')
         };
         for (const key in corsHeaders) {
-            session.client.res.setHeader(key, corsHeaders[key]);
+            res.setHeader(key, corsHeaders[key]);
         }
         session.status = 204; // No Content
         session.endsession('');
@@ -93,7 +100,7 @@ export async function apply(ctx: Context, config: MetadataConfig) {
     finalHeaders = finalHeaders.concat(userHeaders);
 
     for (const header of finalHeaders) {
-      session.client.res.setHeader(header.name, header.value);
+      res.setHeader(header.name, header.value);
     }
 
     await next();

@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-storage-file",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "File storage for Yumeri sessions",
   "main": "dist/index.js",
   "dev": "src/index.ts",
@@ -23,7 +23,7 @@
     "typescript": "^6.0.3"
   },
   "peerDependencies": {
-    "yumeri": "^3.0.0-alpha.1"
+    "yumeri": "^3.0.0"
   },
   "type": "module"
 }

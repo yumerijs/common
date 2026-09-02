@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-permission",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "description": "Permission module for Yumeri",
   "main": "dist/index.js",
   "dev": "src/index.ts",
@@ -27,13 +27,13 @@
   "homepage": "https://github.com/yumerijs/yumeri#readme",
   "devDependencies": {
     "@types/node": "^22.14.1",
-    "@yumerijs/types": "^3.0.0-alpha.1",
+    "@yumerijs/types": "^3.0.0",
     "typescript": "^5.8.2",
-    "yumeri-plugin-user": "^1.1.0"
+    "yumeri-plugin-user": "^1.2.0"
   },
   "peerDependencies": {
-    "yumeri": "^3.0.0-alpha.1",
-    "yumeri-plugin-user": "^1.1.1"
+    "yumeri": "^3.0.0",
+    "yumeri-plugin-user": "^1.2.0"
   },
   "type": "module"
 }

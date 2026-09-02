@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-pages",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Yumeri文章模型",
   "main": "dist/index.js",
   "dev": "src/index.ts",
@@ -16,11 +16,11 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.14.1",
-    "@yumerijs/types": "^3.0.0-alpha.1",
+    "@yumerijs/types": "^3.0.0",
     "typescript": "^5.8.2"
   },
   "peerDependencies": {
-    "yumeri": "^3.0.0-alpha.1"
+    "yumeri": "^3.0.0"
   },
   "type": "module"
 }
