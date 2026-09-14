@@ -6,9 +6,14 @@ export const depend = ['database', 'user'];
 export const usage = `用户权限模型<br>依赖于yumeri-plugin-user（用户模型）<br>超管权限大小为10`;
 export const provide = ['permission'];
 export const config = Schema.object({
-    defaultpermit: Schema.number('默认权限').default(1).required(),
+    defaultpermit: Schema.number('默认权限').key('permission.config.defaultpermit').default(1).required(),
 });
+/** 插件配置项说明的翻译表 */
+const configI18n = {
+    'permission.config.defaultpermit': { zh: '默认权限', en: 'Default permission' },
+};
 export async function apply(ctx, config) {
+    ctx.i18n(configI18n);
     const db = ctx.component.database;
     // Use extend() to define the table schema. This is idempotent.
     await db.extend('permission', {

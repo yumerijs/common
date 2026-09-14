@@ -306,15 +306,26 @@ class MysqlDatabase {
 }
 // --- Plugin Definition ---
 export const config = Schema.object({
-    host: Schema.string('MySQL 主机名').default('localhost'),
-    port: Schema.number('MySQL 端口').default(3306),
-    user: Schema.string('用户名').required(),
-    password: Schema.string('密码').required(),
-    database: Schema.string('数据库名').required(),
-    connectionLimit: Schema.number('连接池大小').default(10),
-    charset: Schema.string('字符集').default('utf8mb4'),
+    host: Schema.string('MySQL 主机名').key('mysql.config.host').default('localhost'),
+    port: Schema.number('MySQL 端口').key('mysql.config.port').default(3306),
+    user: Schema.string('用户名').key('mysql.config.user').required(),
+    password: Schema.string('密码').key('mysql.config.password').required(),
+    database: Schema.string('数据库名').key('mysql.config.database').required(),
+    connectionLimit: Schema.number('连接池大小').key('mysql.config.connectionLimit').default(10),
+    charset: Schema.string('字符集').key('mysql.config.charset').default('utf8mb4'),
 });
+/** 插件配置项说明的翻译表 */
+const configI18n = {
+    'mysql.config.host': { zh: 'MySQL 主机名', en: 'MySQL hostname' },
+    'mysql.config.port': { zh: 'MySQL 端口', en: 'MySQL port' },
+    'mysql.config.user': { zh: '用户名', en: 'Username' },
+    'mysql.config.password': { zh: '密码', en: 'Password' },
+    'mysql.config.database': { zh: '数据库名', en: 'Database name' },
+    'mysql.config.connectionLimit': { zh: '连接池大小', en: 'Connection pool size' },
+    'mysql.config.charset': { zh: '字符集', en: 'Charset' },
+};
 export async function apply(ctx, config) {
+    ctx.i18n(configI18n);
     if (!config.user || !config.password || !config.database) {
         logger.error('MySQL plugin is not configured correctly. Please provide user, password, and database.');
         return;

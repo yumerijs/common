@@ -10,10 +10,16 @@ export const provide = ['authority']; // 提供的服务
 export const usage = `用户登陆验证服务<br>依赖于yumeri-plugin-user（用户模型）`;
 export const config = Schema.object({
     template: Schema.object({
-        loginpath: Schema.string('登录页模板地址').default('../static/login.html'),
-        regpath: Schema.string('注册页模板地址').default('../static/reg.html'),
-    }, 'HTML模板配置'),
+        loginpath: Schema.string('登录页模板地址').key('authority.config.template.loginpath').default('../static/login.html'),
+        regpath: Schema.string('注册页模板地址').key('authority.config.template.regpath').default('../static/reg.html'),
+    }, 'HTML模板配置').key('authority.config.template'),
 });
+/** 插件配置项说明的翻译表 */
+const configI18n = {
+    'authority.config.template': { zh: 'HTML模板配置', en: 'HTML template configuration' },
+    'authority.config.template.loginpath': { zh: '登录页模板地址', en: 'Login page template path' },
+    'authority.config.template.regpath': { zh: '注册页模板地址', en: 'Register page template path' },
+};
 export function resolvePath(inputPath, currentFileDirectory) {
     if (path.isAbsolute(inputPath)) {
         return inputPath;
@@ -34,6 +40,7 @@ async function getHook(ctx, hookname, originString) {
     return newString;
 }
 export async function apply(ctx, config) {
+    ctx.i18n(configI18n);
     let logins = {};
     ctx.registerComponent('authority', {
         getLoginstatus(sessionid) {

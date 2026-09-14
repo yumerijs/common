@@ -212,9 +212,14 @@ class SqliteDatabase {
     }
 }
 export const config = Schema.object({
-    path: Schema.string('数据库文件地址').default('data/database.db'),
+    path: Schema.string('数据库文件地址').key('sqlite.config.path').default('data/database.db'),
 });
+/** 插件配置项说明的翻译表 */
+const configI18n = {
+    'sqlite.config.path': { zh: '数据库文件地址', en: 'Database file path' },
+};
 export async function apply(ctx, config) {
+    ctx.i18n(configI18n);
     const dbPath = path.join(process.cwd(), config.path);
     const db = await SqliteDatabase.create(dbPath);
     ctx.registerComponent('database', db);
