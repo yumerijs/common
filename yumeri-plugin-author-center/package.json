@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-author-center",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Yumeri 作者中心插件",
   "main": "dist/index.js",
   "dev": "src/index.ts",

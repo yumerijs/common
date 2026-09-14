@@ -18,8 +18,13 @@ export interface FrontendConfig {
 }
 
 export const config: Schema<FrontendConfig> = Schema.object({
-  template: Schema.enum(getTemplates(), '前端模板').default('default'),
+  template: Schema.enum(getTemplates(), '前端模板').key('frontend.config.template').default('default'),
 });
+
+/** 插件配置项说明的翻译表 */
+const configI18n = {
+  'frontend.config.template': { zh: '前端模板', en: 'Frontend template' },
+};
 
 function getTemplateConfig(template: string) {
   const cfgPath = path.join(process.cwd(), 'data/templates', template, 'config.json')
@@ -79,6 +84,7 @@ function applyReplacements(content: string, replacements: Record<string, string>
 }
 
 export async function apply(ctx: Context, config: FrontendConfig) {
+  ctx.i18n(configI18n);
   ctx.route('root').action(async (session: Session, params: URLSearchParams) => {
     try {
       const pathname = (session.pathname || '/').replace(/\/+$/, '') || '/'

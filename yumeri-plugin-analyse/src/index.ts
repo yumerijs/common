@@ -21,8 +21,13 @@ export interface AnalyseConfig {
 }
 
 export const config: Schema<AnalyseConfig> = Schema.object({
-  paths: Schema.array(Schema.string(), '排除url开头（不加前后斜线）').default(['api']),
+  paths: Schema.array(Schema.string(), '排除url开头（不加前后斜线）').key('analyse.config.paths').default(['api']),
 });
+
+/** 插件配置项说明的翻译表 */
+const configI18n = {
+  'analyse.config.paths': { zh: '排除url开头（不加前后斜线）', en: 'URL prefixes to exclude (no leading or trailing slash)' },
+};
 
 // HTML and JS for the console page remain the same
 const analyseHtml = `<div class="module-section">
@@ -79,6 +84,7 @@ const analyseJs = `async function loadStats() {
 loadStats();`;
 
 export async function apply(ctx: Context, config: AnalyseConfig) {
+  ctx.i18n(configI18n);
   const db = ctx.component.database;
   const consoleApi = ctx.component.console;
   const requireLogin = (

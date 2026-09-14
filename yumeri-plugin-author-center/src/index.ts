@@ -18,11 +18,18 @@ export interface AuthorCenterConfig {
 }
 
 export const config: Schema<AuthorCenterConfig> = Schema.object({
-  content: Schema.array(Schema.string(), '可发布的文章类型').default(['post']),
-  permit: Schema.number('发布文章的权限').default(2),
+  content: Schema.array(Schema.string(), '可发布的文章类型').key('author-center.config.content').default(['post']),
+  permit: Schema.number('发布文章的权限').key('author-center.config.permit').default(2),
 });
 
+/** 插件配置项说明的翻译表 */
+const configI18n = {
+  'author-center.config.content': { zh: '可发布的文章类型', en: 'Publishable article types' },
+  'author-center.config.permit': { zh: '发布文章的权限', en: 'Permission required to publish' },
+};
+
 export async function apply(ctx: Context, config: AuthorCenterConfig) {
+  ctx.i18n(configI18n);
   const user = ctx.component.user;
   const authority = ctx.component.authority;
   const pages = ctx.component.pages;

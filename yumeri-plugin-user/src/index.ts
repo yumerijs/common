@@ -34,11 +34,19 @@ export interface UserConfig {
 }
 
 export const config: Schema<UserConfig> = Schema.object({
-  name: Schema.string('用户数据表名').default('user'),
-  isEmailopen: Schema.boolean('是否开启邮箱字段').default(true),
-  isPhoneopen: Schema.boolean('是否开启手机号字段').default(true),
-  encryptType: Schema.string('密码加密方式').default('md5'),
+  name: Schema.string('用户数据表名').key('user.config.name').default('user'),
+  isEmailopen: Schema.boolean('是否开启邮箱字段').key('user.config.isEmailopen').default(true),
+  isPhoneopen: Schema.boolean('是否开启手机号字段').key('user.config.isPhoneopen').default(true),
+  encryptType: Schema.string('密码加密方式').key('user.config.encryptType').default('md5'),
 });
+
+/** 插件配置项说明的翻译表 */
+const configI18n = {
+  'user.config.name': { zh: '用户数据表名', en: 'User table name' },
+  'user.config.isEmailopen': { zh: '是否开启邮箱字段', en: 'Enable the email field' },
+  'user.config.isPhoneopen': { zh: '是否开启手机号字段', en: 'Enable the phone field' },
+  'user.config.encryptType': { zh: '密码加密方式', en: 'Password encryption method' },
+};
 
 export class User {
   private tableName: string
@@ -94,6 +102,7 @@ export class User {
 }
 
 export async function apply(ctx: Context, config: UserConfig) {
+  ctx.i18n(configI18n);
   const db = ctx.component.database;
 
   const schema: Record<string, any> = {

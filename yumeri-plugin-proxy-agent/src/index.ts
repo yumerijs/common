@@ -13,14 +13,21 @@ export interface ProxyAgentConfig {
 
 export const config: Schema<ProxyAgentConfig> = Schema.object({
   proxyUrl: Schema.string('代理地址 (支持 http/https/socks5)')
+    .key('proxy-agent.config.proxyUrl')
     .default("http://127.0.0.1:7890")
     .required(),
 });
+
+/** 插件配置项说明的翻译表 */
+const configI18n = {
+  'proxy-agent.config.proxyUrl': { zh: '代理地址 (支持 http/https/socks5)', en: 'Proxy URL (http/https/socks5)' },
+};
 
 let originalHttpAgent: any = http.globalAgent;
 let originalHttpsAgent: any = https.globalAgent;
 
 export async function apply(ctx: Context, cfg: ProxyAgentConfig) {
+  ctx.i18n(configI18n);
   const { proxyUrl } = cfg;
 
   try {

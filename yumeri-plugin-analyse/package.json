@@ -1,6 +1,6 @@
 {
   "name": "yumeri-plugin-analyse",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Add an analyse section to console",
   "main": "dist/index.js",
   "dev": "src/index.ts",

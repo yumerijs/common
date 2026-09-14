@@ -33,22 +33,38 @@ export interface MetadataConfig {
 
 export const config: Schema<MetadataConfig> = Schema.object({
   headers: Schema.array(Schema.object({
-    name: Schema.string().required(),
-    value: Schema.string().required(),
-  }), '响应头键值对').default([]),
-  head: Schema.string('head标签注入内容').default(''),
-  script: Schema.string('body标签注入内容').default(''),
+    name: Schema.string('响应头名称').key('metadata.config.headers.name').required(),
+    value: Schema.string('响应头值').key('metadata.config.headers.value').required(),
+  }), '响应头键值对').key('metadata.config.headers').default([]),
+  head: Schema.string('head标签注入内容').key('metadata.config.head').default(''),
+  script: Schema.string('body标签注入内容').key('metadata.config.script').default(''),
   presets: Schema.object({
     cors: Schema.object({
-      enabled: Schema.boolean('是否启用').default(false),
-      origin: Schema.string('允许的域名').default('*'),
-      methods: Schema.string('允许的方法').default('GET,HEAD,PUT,PATCH,POST,DELETE'),
-    }, '配置跨域').default({ enabled: false, origin: '*', methods: 'GET,HEAD,PUT,PATCH,POST,DELETE' }),
-    security: Schema.boolean('开启安全头，可以防止一些常见的web攻击').default(false),
-  }, '预设功能').default({ cors: { enabled: false, origin: '*', methods: 'GET,HEAD,PUT,PATCH,POST,DELETE' }, security: false }),
+      enabled: Schema.boolean('是否启用').key('metadata.config.presets.cors.enabled').default(false),
+      origin: Schema.string('允许的域名').key('metadata.config.presets.cors.origin').default('*'),
+      methods: Schema.string('允许的方法').key('metadata.config.presets.cors.methods').default('GET,HEAD,PUT,PATCH,POST,DELETE'),
+    }, '配置跨域').key('metadata.config.presets.cors').default({ enabled: false, origin: '*', methods: 'GET,HEAD,PUT,PATCH,POST,DELETE' }),
+    security: Schema.boolean('开启安全头，可以防止一些常见的web攻击').key('metadata.config.presets.security').default(false),
+  }, '预设功能').key('metadata.config.presets').default({ cors: { enabled: false, origin: '*', methods: 'GET,HEAD,PUT,PATCH,POST,DELETE' }, security: false }),
 });
 
+/** 插件配置项说明的翻译表 */
+const configI18n = {
+  'metadata.config.headers': { zh: '响应头键值对', en: 'Response header key-value pairs' },
+  'metadata.config.headers.name': { zh: '响应头名称', en: 'Header name' },
+  'metadata.config.headers.value': { zh: '响应头值', en: 'Header value' },
+  'metadata.config.head': { zh: 'head标签注入内容', en: 'Content injected into the head tag' },
+  'metadata.config.script': { zh: 'body标签注入内容', en: 'Content injected into the body tag' },
+  'metadata.config.presets': { zh: '预设功能', en: 'Presets' },
+  'metadata.config.presets.cors': { zh: '配置跨域', en: 'CORS configuration' },
+  'metadata.config.presets.cors.enabled': { zh: '是否启用', en: 'Enabled' },
+  'metadata.config.presets.cors.origin': { zh: '允许的域名', en: 'Allowed origins' },
+  'metadata.config.presets.cors.methods': { zh: '允许的方法', en: 'Allowed methods' },
+  'metadata.config.presets.security': { zh: '开启安全头，可以防止一些常见的web攻击', en: 'Enable security headers to prevent common web attacks' },
+};
+
 export async function apply(ctx: Context, config: MetadataConfig) {
+  ctx.i18n(configI18n);
   const { head, script, presets, headers: userHeaders } = config;
 
   // Pre-middleware for headers

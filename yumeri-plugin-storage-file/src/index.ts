@@ -9,8 +9,13 @@ export interface StorageFileConfig {
 }
 
 export const config: Schema<StorageFileConfig> = Schema.object({
-  path: Schema.string('存储文件路径').default('./data/storage.json'),
+  path: Schema.string('存储文件路径').key('storage-file.config.path').default('./data/storage.json'),
 });
+
+/** 插件配置项说明的翻译表 */
+const configI18n = {
+  'storage-file.config.path': { zh: '存储文件路径', en: 'Storage file path' },
+};
 
 type StorageFileData = Record<string, SessionStorageSnapshot>;
 
@@ -75,6 +80,7 @@ class FileStorage implements Storage<SessionStorageSnapshot> {
 }
 
 export function apply(ctx: Context, pluginConfig: StorageFileConfig) {
+  ctx.i18n(configI18n);
   const storage = new FileStorage(pluginConfig.path);
   ctx.setStorage(storage);
   logger.info(`Session storage file: ${pluginConfig.path}`);
